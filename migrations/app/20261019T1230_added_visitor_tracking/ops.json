@@ -1,0 +1,127 @@
+[
+  {
+    "id": "renameColumn.Short_URL.original_URL",
+    "label": "Rename column \"Short_URL\".\"original_URL\" to \"original_url\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "original_url",
+        "table": "Short_URL"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"original_URL\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_URL"
+        ]
+      },
+      {
+        "description": "ensure column \"original_url\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_url"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename column \"original_URL\" to \"original_url\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" RENAME COLUMN \"original_URL\" TO \"original_url\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"original_url\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_url"
+        ]
+      },
+      {
+        "description": "verify column \"original_URL\" no longer exists",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_URL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.Short_URL.no_visitors",
+    "label": "Add column no_visitors to Short_URL",
+    "summary": "Adds column no_visitors to table Short_URL",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Short_URL"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"no_visitors\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"no_visitors\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" ADD COLUMN \"no_visitors\" int4 DEFAULT (0) NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"no_visitors\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" ALTER COLUMN \"no_visitors\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"no_visitors\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors"
+        ]
+      },
+      {
+        "description": "verify column \"no_visitors\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"no_visitors\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,174 @@
+[
+  {
+    "id": "dropColumn.Short_URL.original_URL",
+    "label": "Drop column \"original_URL\" from \"Short_URL\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "original_URL",
+        "table": "Short_URL"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"original_URL\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_URL"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"original_URL\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" DROP COLUMN \"original_URL\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"original_URL\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_URL"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.Short_URL.no_visitors",
+    "label": "Add column no_visitors to Short_URL",
+    "summary": "Adds column no_visitors to table Short_URL",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Short_URL"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"no_visitors\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"no_visitors\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" ADD COLUMN \"no_visitors\" int4 DEFAULT (0) NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"no_visitors\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" ALTER COLUMN \"no_visitors\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"no_visitors\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors"
+        ]
+      },
+      {
+        "description": "verify column \"no_visitors\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"no_visitors\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "no_visitors"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.Short_URL.original_url",
+    "label": "Add column original_url to Short_URL",
+    "summary": "Adds column original_url to table Short_URL",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Short_URL"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"original_url\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_url"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"original_url\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" ADD COLUMN \"original_url\" text DEFAULT ('') NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"original_url\"",
+        "sql": "ALTER TABLE \"public\".\"Short_URL\" ALTER COLUMN \"original_url\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"original_url\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_url"
+        ]
+      },
+      {
+        "description": "verify column \"original_url\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_url",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"original_url\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "Short_URL",
+          "original_url"
+        ]
+      }
+    ]
+  }
+]
