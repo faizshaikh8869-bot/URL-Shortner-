@@ -9,15 +9,6 @@ import { genreate_Url_Schema } from '../validation/URL.Validation'
 import { URL } from 'url';
 const urlRoute = Router();
 
-// Edge cases 
-/**
- * 
- * 1. How the short code generation is working 
- * 
- * DONE --- 2. Check the duplicate short code        -- Solution Retry loop - n times
- * 
- * DONE --- 3. Check the Correct http or https://domain_name input 
- */
 
 function generateShortCode(length: number = 6): string {
     return crypto.randomBytes(Math.ceil((length * 3) / 4))
